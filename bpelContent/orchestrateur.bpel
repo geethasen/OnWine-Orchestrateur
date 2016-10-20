@@ -101,7 +101,10 @@
   <codePays>codePays</codePays>
 </tns:calculTax>
 </bpel:literal></bpel:from>
-                <bpel:to variable="a">
+                <bpel:to part="parameters" variable="ServiceTaxBeanRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                        <![CDATA[codePays]]>
+                    </bpel:query>
                 </bpel:to>
             </bpel:copy>
             
@@ -239,7 +242,14 @@
                 <bpel:to variable="b"></bpel:to>
             </bpel:copy>
         </bpel:assign>
-        <bpel:assign validate="no" name="AssignPrepaCurrency">
+        
+        
+        
+        
+        
+        <bpel:if name="If_trgtCurrency_different_EUR"><bpel:condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[$input.payload/tns:currency != "EUR"]]></bpel:condition>
+            <bpel:sequence name="Sequence">
+                <bpel:assign validate="no" name="AssignPrepaCurrency">
             <bpel:copy>
                 <bpel:from><bpel:literal xml:space="preserve"><tns:convert xmlns:tns="http://soap.currency.ws.atod.afcepf.fr/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <amount>0.0</amount>
@@ -251,10 +261,7 @@
             </bpel:copy>
             
             <bpel:copy>
-                <bpel:from part="parameters" variable="PartnerLinkCalculateurResponse">
-                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
-                        <![CDATA[return]]>
-                    </bpel:query>
+                <bpel:from variable="b">
                 </bpel:from>
                 <bpel:to part="parameters" variable="PartnerLinkCurrencyRequest">
                     <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
@@ -273,8 +280,27 @@
             </bpel:copy>
             
         </bpel:assign>
+                <bpel:invoke name="InvokeServiceCurrency" partnerLink="PartnerLinkCurrency" operation="convert" portType="ns:ICurrencyConverter" inputVariable="PartnerLinkCurrencyRequest" outputVariable="PartnerLinkCurrencyResponse"></bpel:invoke>
+            </bpel:sequence>
         
-        <bpel:invoke name="InvokeServiceCurrency" partnerLink="PartnerLinkCurrency" operation="convert" portType="ns:ICurrencyConverter" inputVariable="PartnerLinkCurrencyRequest" outputVariable="PartnerLinkCurrencyResponse"></bpel:invoke>
+            <bpel:else>
+                <bpel:assign validate="no" name="AssignDirect">
+                    <bpel:copy>
+                        <bpel:from><bpel:literal><tns:orchestrateurResponse xmlns:tns="http://fr.afcepf.al28.orchestrateur" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <tns:montantTotal>0.0</tns:montantTotal>
+</tns:orchestrateurResponse>
+</bpel:literal></bpel:from>
+                        <bpel:to part="payload" variable="output"></bpel:to>
+                    </bpel:copy>
+                    <bpel:copy>
+                        <bpel:from variable="b"></bpel:from>
+                        <bpel:to part="payload" variable="output">
+                            <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:montantTotal]]></bpel:query>
+                        </bpel:to>
+                    </bpel:copy>
+                </bpel:assign>
+            </bpel:else>
+        </bpel:if>
         <bpel:reply name="replyOutput" 
                partnerLink="client"
                portType="tns:orchestrateur"
