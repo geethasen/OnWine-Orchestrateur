@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://fr.afcepf.al28.orchestrateur" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://tax.afcepf.fr" xmlns:wsdl1="http://soap.currency.ws.atod.afcepf.fr/" xmlns:wsdl2="http://delivery.afcepf.fr" xmlns:wsdl3="http://service.al28.afcepf.fr/" name="orchestrateur" targetNamespace="http://fr.afcepf.al28.orchestrateur">
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     TYPE DEFINITION - List of types participating in this BPEL process 
+     The BPEL Designer will generate default request and response types
+     but you can define or import any XML Schema type and use them as part 
+     of the message types.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <plnk:partnerLinkType name="serviceTaxBeanPlnkType">
+    <plnk:role name="serviceTaxProvider" portType="wsdl:ServiceTax"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="PartnerCurrencyPL">
+    <plnk:role name="PartnerCurrencyPLRole" portType="wsdl1:ICurrencyConverter"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="PartnerLinkDelivery">
+    <plnk:role name="PartnerLinkDeliveryRole" portType="wsdl2:IDeliveryCalculator"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="PartnerLinkCalculateur">
+    <plnk:role name="PartnerLinkCalculateurRole" portType="wsdl3:Calculateur"/>
+    <plnk:role name="CalculateurRole" portType="wsdl3:Calculateur"/>
+  </plnk:partnerLinkType>
+    <import location="ServiceTaxBean.wsdl" namespace="http://tax.afcepf.fr"/>
+    <import location="CurrencyConverter.wsdl" namespace="http://soap.currency.ws.atod.afcepf.fr/"/>
+    <import location="DeliveryCalculator.wsdl" namespace="http://delivery.afcepf.fr"/>
+    <import location="calculateur.wsdl" namespace="http://service.al28.afcepf.fr/"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://fr.afcepf.al28.orchestrateur">
+
+            <element name="orchestrateurRequest">
+                <complexType>
+                    <sequence>
+                        <element name="codePaysFacturation" type="string"/>
+                        <element name="codePaysLivraison" type="string"/>
+                        <element name="montantHT" type="double"/>
+                        <element name="quantite" type="integer"/>
+                        <element name="currency" type="string"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="orchestrateurResponse">
+                <complexType>
+                    <sequence>
+                        <element name="montantTotal" type="double"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     MESSAGE TYPE DEFINITION - Definition of the message types used as 
+     part of the port type defintions
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <message name="orchestrateurRequestMessage">
+        <part element="tns:orchestrateurRequest" name="payload"/>
+    </message>
+    <message name="orchestrateurResponseMessage">
+        <part element="tns:orchestrateurResponse" name="payload"/>
+    </message>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     PORT TYPE DEFINITION - A port type groups a set of operations into
+     a logical service unit.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+
+    <!-- portType implemented by the orchestrateur BPEL process -->
+    <portType name="orchestrateur">
+        <operation name="process">
+            <input message="tns:orchestrateurRequestMessage"/>
+            <output message="tns:orchestrateurResponseMessage"/>
+        </operation>
+    </portType>   
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     PARTNER LINK TYPE DEFINITION
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <plnk:partnerLinkType name="orchestrateur">
+        <plnk:role name="orchestrateurProvider" portType="tns:orchestrateur"/>
+    </plnk:partnerLinkType>
+    
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     BINDING DEFINITION - Defines the message format and protocol details
+     for a web service.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <binding name="orchestrateurBinding" type="tns:orchestrateur">
+    	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    	<operation name="process">
+    		<soap:operation soapAction="http://fr.afcepf.al28.orchestrateur/process"/>
+    		<input>
+    			<soap:body use="literal"/>
+    		</input>
+    		<output>
+    			<soap:body use="literal"/>
+    		</output>
+    	</operation>
+    </binding>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     SERVICE DEFINITION - A service groups a set of ports into
+     a service unit.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <service name="orchestrateurService">
+    	<port binding="tns:orchestrateurBinding" name="orchestrateurPort">
+    		<soap:address location="http://localhost:8080/orchestrateur"/>
+    	</port>
+    </service>
+</definitions>
