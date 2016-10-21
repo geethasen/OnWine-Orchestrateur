@@ -17,8 +17,11 @@
     <plnk:role name="PartnerLinkDeliveryRole" portType="wsdl2:IDeliveryCalculator"/>
   </plnk:partnerLinkType>
     <plnk:partnerLinkType name="PartnerLinkCalculateur">
-    <plnk:role name="PartnerLinkCalculateurRole" portType="wsdl3:Calculateur"/>
-    <plnk:role name="CalculateurRole" portType="wsdl3:Calculateur"/>
+<!--     <plnk:role name="PartnerLinkCalculateurRole" portType="wsdl3:Calculateur"/> -->
+<!--     <plnk:role name="CalculateurRole" portType="wsdl3:Calculateur"/> -->
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="CalculPL">
+    <plnk:role name="CalculPLTye" portType="wsdl3:ICalculateur"/>
   </plnk:partnerLinkType>
     <import location="ServiceTaxBean.wsdl" namespace="http://tax.afcepf.fr"/>
     <import location="CurrencyConverter.wsdl" namespace="http://soap.currency.ws.atod.afcepf.fr/"/>
@@ -104,7 +107,7 @@
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <service name="orchestrateurService">
     	<port binding="tns:orchestrateurBinding" name="orchestrateurPort">
-    		<soap:address location="http://localhost:8090/ode/processes/orchestrateur"/>
+    		<soap:address location="http://localhost:9090/ode/processes/orchestrateur"/>
     	</port>
     </service>
 </definitions>

@@ -2,6 +2,8 @@
   <wsdl:types>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.currency.ws.atod.afcepf.fr/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://soap.currency.ws.atod.afcepf.fr/">
   <xs:element name="convert" type="tns:convert"/>
+  <xs:element name="convertAndFormat" type="tns:convertAndFormat"/>
+  <xs:element name="convertAndFormatResponse" type="tns:convertAndFormatResponse"/>
   <xs:element name="convertResponse" type="tns:convertResponse"/>
   <xs:element name="dtCurrency" type="tns:dtCurrency"/>
   <xs:element name="getAllCurrencies" type="tns:getAllCurrencies"/>
@@ -9,13 +11,31 @@
   <xs:complexType name="convert">
     <xs:sequence>
       <xs:element minOccurs="0" name="amount" type="xs:double"/>
-      <xs:element minOccurs="0" name="srcCurrency" type="xs:string"/>
-      <xs:element minOccurs="0" name="trgtCurrency" type="xs:string"/>
+      <xs:element minOccurs="0" name="src" type="xs:string"/>
+      <xs:element minOccurs="0" name="trgt" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="convertResponse">
     <xs:sequence>
       <xs:element minOccurs="0" name="return" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="convertAndFormat">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="amount" type="xs:double"/>
+      <xs:element minOccurs="0" name="src" type="xs:string"/>
+      <xs:element minOccurs="0" name="trgt" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="convertAndFormatResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:wrapper"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="wrapper">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="amount" type="xs:string"/>
+      <xs:element minOccurs="0" name="currency_class" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="getAllCurrencies">
@@ -61,6 +81,10 @@
     <wsdl:part element="tns:getAllCurrenciesResponse" name="parameters">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="convertAndFormat">
+    <wsdl:part element="tns:convertAndFormat" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="CurrenciesWSException">
     <wsdl:part element="tns:CurrenciesWSException" name="CurrenciesWSException">
     </wsdl:part>
@@ -73,11 +97,23 @@
     <wsdl:part element="tns:getAllCurrencies" name="parameters">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="convertAndFormatResponse">
+    <wsdl:part element="tns:convertAndFormatResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:portType name="ICurrencyConverter">
     <wsdl:operation name="convert">
       <wsdl:input message="tns:convert" name="convert">
     </wsdl:input>
       <wsdl:output message="tns:convertResponse" name="convertResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:CurrenciesWSException" name="CurrenciesWSException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="convertAndFormat">
+      <wsdl:input message="tns:convertAndFormat" name="convertAndFormat">
+    </wsdl:input>
+      <wsdl:output message="tns:convertAndFormatResponse" name="convertAndFormatResponse">
     </wsdl:output>
       <wsdl:fault message="tns:CurrenciesWSException" name="CurrenciesWSException">
     </wsdl:fault>
@@ -105,6 +141,18 @@
         <soap:fault name="CurrenciesWSException" use="literal"/>
       </wsdl:fault>
     </wsdl:operation>
+    <wsdl:operation name="convertAndFormat">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="convertAndFormat">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="convertAndFormatResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="CurrenciesWSException">
+        <soap:fault name="CurrenciesWSException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
     <wsdl:operation name="getAllCurrencies">
       <soap:operation soapAction="" style="document"/>
       <wsdl:input name="getAllCurrencies">
@@ -120,7 +168,7 @@
   </wsdl:binding>
   <wsdl:service name="CurrencyConverterService">
     <wsdl:port binding="tns:CurrencyConverterServiceSoapBinding" name="CurrencyConverterPort">
-      <soap:address location="http://localhost:8080/OnWine-CurrenciesWS-Biz/CurrencyConverter"/>
+      <soap:address location="http://DESKTOP-KRGI984:8080/OnWine-CurrenciesWS-Biz/CurrencyConverter"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
