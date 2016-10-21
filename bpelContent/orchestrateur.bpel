@@ -19,7 +19,8 @@
 	        importType="http://schemas.xmlsoap.org/wsdl/" />
     <bpel:import location="CurrencyConverter.wsdl" namespace="http://soap.currency.ws.atod.afcepf.fr/" 
 	        importType="http://schemas.xmlsoap.org/wsdl/" />	        
-         
+    <bpel:import location="calculateur.wsdl" namespace="http://service.al28.afcepf.fr/" 
+            importType="http://schemas.xmlsoap.org/wsdl/" />     
     <!-- ================================================================= -->         
     <!-- PARTNERLINKS                                                      -->
     <!-- List of services participating in this BPEL process               -->
@@ -73,8 +74,8 @@
         <bpel:variable name="PartnerLinkCurrencyRequest" messageType="ns:convert"></bpel:variable>
         <bpel:variable name="PartnerLinkCalculateurResponse" messageType="ns0:additionResponse"></bpel:variable>
         <bpel:variable name="PartnerLinkCalculateurRequest" messageType="ns0:addition"></bpel:variable>
-        <bpel:variable name="a" type="ns1:decimal"></bpel:variable>
-        <bpel:variable name="b" type="ns1:decimal"></bpel:variable>
+        <bpel:variable name="a" type="ns1:double"></bpel:variable>
+        <bpel:variable name="b" type="ns1:double"></bpel:variable>
     </bpel:variables>
 
     <!-- ================================================================= -->         
@@ -116,7 +117,9 @@
                     </bpel:query>
                 </bpel:from>
                 <bpel:to part="parameters" variable="ServiceTaxBeanRequest">
-                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[codePays]]></bpel:query>
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                        <![CDATA[codePays]]>
+                    </bpel:query>
                 </bpel:to>
             </bpel:copy>
             <bpel:copy>
@@ -172,7 +175,8 @@
   <v2>0.0</v2>
 </tns:addition>
 </bpel:literal></bpel:from>
-                <bpel:to variable="PartnerLinkCalculateurRequest" part="parameters"></bpel:to>
+                <bpel:to part="parameters" variable="PartnerLinkCalculateurRequest">
+                </bpel:to>
             </bpel:copy>
             
             <bpel:copy>
@@ -182,9 +186,7 @@
                     </bpel:query>
                 </bpel:from>
                 <bpel:to part="parameters" variable="PartnerLinkCalculateurRequest">
-                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
-                        <![CDATA[v1]]>
-                    </bpel:query>
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[v1]]></bpel:query>
                 </bpel:to>
             </bpel:copy>
             <bpel:copy>
@@ -198,9 +200,12 @@
         </bpel:assign>
         <bpel:invoke name="InvokeServiceAdd" partnerLink="PartnerLinkCalculateur" operation="addition" portType="ns0:Calculateur" inputVariable="PartnerLinkCalculateurRequest" outputVariable="PartnerLinkCalculateurResponse"></bpel:invoke>
         <bpel:assign validate="no" name="Assign">
+            
             <bpel:copy>
                 <bpel:from part="parameters" variable="PartnerLinkCalculateurResponse">
-                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[return]]></bpel:query>
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                        <![CDATA[return]]>
+                    </bpel:query>
                 </bpel:from>
                 <bpel:to variable="a"></bpel:to>
             </bpel:copy>
@@ -290,7 +295,9 @@
   <tns:montantTotal>0.0</tns:montantTotal>
 </tns:orchestrateurResponse>
 </bpel:literal></bpel:from>
-                        <bpel:to part="payload" variable="output"></bpel:to>
+                        <bpel:to part="payload" variable="output">
+                            <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:montantTotal]]></bpel:query>
+                        </bpel:to>
                     </bpel:copy>
                     <bpel:copy>
                         <bpel:from variable="b"></bpel:from>

@@ -120,7 +120,7 @@
   </wsdl:binding>
   <wsdl:service name="CurrencyConverterService">
     <wsdl:port binding="tns:CurrencyConverterServiceSoapBinding" name="CurrencyConverterPort">
-      <soap:address location="http://DESKTOP-KRGI984:8080/OnWine-CurrenciesWS-Biz/CurrencyConverter"/>
+      <soap:address location="http://localhost:8080/OnWine-CurrenciesWS-Biz/CurrencyConverter"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

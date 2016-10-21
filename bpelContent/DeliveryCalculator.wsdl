@@ -123,7 +123,7 @@
   </wsdl:binding>
   <wsdl:service name="DeliveryCalculatorService">
     <wsdl:port binding="tns:DeliveryCalculatorServiceSoapBinding" name="DeliveryCalculatorPort">
-      <soap:address location="http://localhost:8080/OnWine-DeliveryWS-Biz/DeliveryCalculator"/>
+      <soap:address location="http://localhost:8180/OnWine-DeliveryWS-Biz/DeliveryCalculator"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

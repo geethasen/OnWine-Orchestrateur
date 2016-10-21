@@ -104,7 +104,7 @@
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <service name="orchestrateurService">
     	<port binding="tns:orchestrateurBinding" name="orchestrateurPort">
-    		<soap:address location="http://localhost:8080/orchestrateur"/>
+    		<soap:address location="http://localhost:8090/ode/processes/orchestrateur"/>
     	</port>
     </service>
 </definitions>
